@@ -1,0 +1,324 @@
+static Data class {
+	static Interpolation class {
+		var MONOTONE = "monotone";
+		var WEIGHTED = "default";
+	}
+
+	struct Point class {
+		var x;
+		var y;
+
+		init(final x, final y) => {
+			this.x = x;
+			this.y = y;
+		}
+
+		getString() => {
+			return "(" + str x + ", " + str y + ")";
+		}
+
+		getDataObject() => {
+			return @{ "x" : x, "y" : y };
+		}
+	}
+
+	struct Set class {
+		var data = {};
+		var backgroundColor = "#8888ff66";
+		var borderColor = "#8888ff";
+		var borderWidth = 1;
+		var label = "";
+		var stepped = false;
+		var cubicInterpolationMode = "monotone";
+		var pointRadius = 3;
+
+		init(final label) => {
+			setLabel(label);
+		}
+
+		setLabel(final label) => {
+			label != null then {
+				this.label = label;
+			} else {
+				this.label = "";
+			}
+			return this;
+		}
+
+		setBackgroundColor(final backgroundColor) => {
+			backgroundColor == null then {
+				this.backgroundColor = "#00000000";
+			} else {
+				this.backgroundColor = backgroundColor;
+			}
+			return this;
+		}
+
+		setBorderColor(final borderColor) => {
+			borderColor == null then {
+				this.borderColor = "#00000000";
+			} else {
+				this.borderColor = borderColor;
+			}
+			return this;
+		}
+
+		setBorderWidth(final borderWidth) => {
+			borderWidth == null then {
+				this.borderWidth = 0;
+			} else {
+				this.borderWidth = borderWidth;
+			}
+			return this;
+		}
+
+		setInterpolation(final cubicInterpolationMode) => {
+			cubicInterpolationMode == null then {
+				this.cubicInterpolationMode = "monotone";
+			} else {
+				this.cubicInterpolationMode = cubicInterpolationMode;
+			}
+			return this;
+		}
+
+		setPointRadius(final pointRadius) => {
+			pointRadius == null then {
+				this.pointRadius = 0;
+			} else {
+				this.pointRadius = pointRadius;
+			}
+		}
+
+		setData(final data) => {
+			this.data = {};
+			e in data do {
+				type(e) == "Data.Point" then {
+					this.data += { e.getDataObject() };
+				} else {
+					this.data += { e };
+				}
+			}
+			return this;
+		}
+
+		setStepped(final stepped) => {
+			this.stepped = stepped;
+			return this;
+		}
+
+		getDataObject() => {
+			return @{
+				"label" : label,
+				"data" : data,
+				"backgroundColor" : backgroundColor,
+				"borderColor" : borderColor,
+				"borderWidth" : borderWidth,
+				"steppedLine" : stepped,
+				"cubicInterpolationMode" : cubicInterpolationMode,
+				"pointRadius" : pointRadius
+			};
+		}
+	}
+}
+
+static Graph class {
+	abstract Prototype class {
+		var datasets = {};
+		var labels;
+
+		init(final labels) => {
+			setLabels(labels);
+		}
+
+		addData(ref data) => {
+			this.datasets += { data.getDataObject() };
+			return this;
+		}
+
+		setLabels(final labels) => {
+			labels == null then {
+				throw "Labels required for Graph initialization";
+			}
+			this.labels = labels;
+			return this;
+		}
+	}
+
+	struct Bar extends Prototype class {
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "bar",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					},
+					"options" : @{
+						"scales" : @{
+							"yAxes" : {
+								@{
+									"ticks" : @{
+										"beginAtZero" : true
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	struct HorizontalBar extends Prototype class {
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "horizontalBar",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					},
+					"options" : @{
+						"scales" : @{
+							"xAxes" : {
+								@{
+									"ticks" : @{
+										"beginAtZero" : true
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	struct Line extends Prototype class {
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "line",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					}
+				}
+			}
+		}
+	}
+
+	struct Radar extends Prototype class {
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "radar",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					},
+					"options" : @{
+						"scale" : @{
+							"ticks" : @{
+								"min" : 0
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	struct Pie extends Prototype class {
+		var cutout = 0;
+
+		setCutout(final cutout) => {
+			this.cutout = cutout;
+		}
+
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "pie",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					},
+					"options" : @{
+						"cutoutPercentage" : cutout
+					}
+				}
+			}
+		}
+	}
+
+	struct Polar extends Prototype class {
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "polarArea",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					},
+					"options" : @{
+						"scale" : @{
+							"ticks" : @{
+								"min" : 0
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	struct Scatter extends Prototype class {
+		graph(height) => {
+			height == null then {
+				height = 150;
+			}
+			return @{
+				"type" : "canvas-graph",
+				"height" : height,
+				"graph" : @{
+					"type" : "scatter",
+					"data" : @{
+						"labels" : labels,
+						"datasets" : datasets
+					}
+				}
+			}
+		}
+	}
+}

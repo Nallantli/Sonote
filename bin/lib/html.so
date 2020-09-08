@@ -1,0 +1,46 @@
+static Format class {
+	table(ref header, ref vector) => {
+		var s = "<table>";
+		header != null then {
+			s += "<tr>";
+			e in header do {
+				s += "<th>" + str e + "</th>";
+			}
+			s += "</tr>";
+		}
+		row in vector do {
+			s += "<tr>";
+			e in row do {
+				s += "<td>" + str e + "</td>";
+			}
+			s += "</tr>";
+		}
+		return s;
+	}
+}
+
+jsonify(ref value) => {
+	type(value) == "Vector" then {
+		var s = "[";
+		i in {0 until length(value)} do {
+			s += jsonify(value[i]);
+			i < length(value) - 1 then {
+				s += ",";
+			}
+		}
+		return s + "]";
+	} else type(value) == "Dictionary" then {
+		var s = "{";
+		var i = 0;
+		e in value do {
+			s += "\"" + e["key"] + "\":" + jsonify(e["value"]);
+			i < length(value) - 1 then {
+				s += ",";
+			}
+			i += 1;
+		}
+		return s + "}";
+	} else {
+		return "\"" + str value + "\"";
+	}
+}

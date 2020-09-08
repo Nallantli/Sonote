@@ -1,0 +1,172 @@
+@namespace "http://www.w3.org/1998/Math/MathML";
+
+
+/* math */
+math {
+	padding: 10px;
+	font-family: "Latin Modern", "Cambria Math", serif;
+    display: inline-block;
+	text-indent: 0;
+	font-size: 18px;
+}
+math[display="block"] {
+    display: block;
+    text-align: center;
+}
+
+math * {
+	display: block;
+}
+
+.ruleslash {
+	font-size: 28px;
+}
+
+/*msub > *:nth-child(2), msubsup > *:nth-child(2),
+mmultiscripts > *:nth-child(2n+2),
+mmultiscripts > mprescripts ~ *:nth-child(2n+3) {
+    font-size: 0.8em;
+    vertical-align: sub;
+}
+msup > *:nth-child(2), msubsup > *:nth-child(3),
+mmultiscripts > *:nth-child(2n+3),
+mmultiscripts > mprescripts ~ *:nth-child(2n+2) {
+    font-size: 0.8em;
+    vertical-align: super;
+}
+mprescripts:after {
+    content: ";";
+}*/
+
+msub{
+	display: flex;
+	flex-direction: row;
+	align-items: flex-end;
+}
+
+msub > :nth-child(2){
+	font-size: 60%;
+	margin-bottom: -0.5em;
+}
+
+msup{
+	display: flex;
+	flex-direction: row;
+	align-items: flex-start;
+}
+
+msup > :nth-child(2){
+	font-size: 60%;
+	margin-top: -0.5em;
+}
+
+
+mrow{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+munder {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+
+munder > :nth-child(2){
+	font-size: 60%;
+	height: 0;
+}
+
+
+mo[fence=true], mo[stretchy=true] {
+	align-self: stretch;
+	display: block;
+}
+
+mo[class~=lparen]{
+	color: transparent;
+	background-image: url(icons/lparen.png);
+	background-size: 100% 100%;
+	width: 0.4em;
+}
+mo[class~=rparen]{
+	color: transparent;
+	background-image: url(icons/rparen.png);
+	background-size: 100% 100%;
+	width: 0.4em;
+}
+mo[class~=lbracket]{
+	color: transparent;
+	background-image: url(icons/lbracket.png);
+	background-size: 100% 100%;
+	width: 0.3em;
+}
+mo[class~=rbracket]{
+	color: transparent;
+	background-image: url(icons/rbracket.png);
+	background-size: 100% 100%;
+	width: 0.3em;
+}
+mo[class~=lbrace]{
+	color: transparent;
+	background-image: url(icons/lbrace.png);
+	background-size: 100% 100%;
+	width: 0.6em;
+}
+mo[class~=rbrace]{
+	color: transparent;
+	background-image: url(icons/rbrace.png);
+	background-size: 100% 100%;
+	width: 0.6em;
+}
+mo[class~=vbar]{
+	color: transparent;
+	background-color: black;
+	background-size: 100% 100%;
+	width: 1px;
+}
+
+
+
+mtable {
+    display: table;
+    vertical-align: middle;
+	border-collapse: separate;
+}
+mtr {
+    display: table-row;
+}
+mtd {
+    display: table-cell;
+    padding: 0 0.5ex;
+}
+
+
+mspace {
+    margin: .2em;
+}
+mi {
+    font-style: italic;
+    margin-right: .1em;
+    margin-left: .1em;
+}
+mo {
+    margin-right: .1em;
+    margin-left: .1em;
+}
+mn {
+	margin-right: .1em;
+    margin-left: .1em;
+}
+
+
+
+
+
+
+
+
+
+

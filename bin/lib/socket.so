@@ -1,0 +1,157 @@
+# Benjamin Park
+# 02-08-2020
+
+import "LIB_Socket";
+
+##	Container for the `Socket` object
+struct Socket class {
+	##	Contains a pointer to `Socket.class`
+	##	@field	Pointer
+	var socket;
+	##	Value of the Socket's address
+	##	@field	String
+	var address;
+	##	Value of the Socket's port
+	##	@field	Number
+	var port;
+
+	##	Constructor for `Socket`
+	##	@param	address	String,Pointer	Value of a given address, or (by means of a `Server` object) a predefined pointer to `Socket.class`
+	##	@param	port	Number	Value of a given port, unused in the case of `address` being a referrent to Socket.class
+	init(final address, final port) => {
+		port == null then {
+			this.socket = address;
+		} else {
+			this.socket = (_OUTER_CALL_ ("LIB_Socket", "OPEN", address, port));
+			this.address = address;
+			this.port = port;
+		}
+	}
+
+	##	Closes a `Socket`
+	close() => {
+		_OUTER_CALL_ ("LIB_Socket", "CLOSE", socket);
+		socket = null;
+	}
+
+	##	Gets a `Socket.Output` object referring to the current instance of `Socket`
+	##	@return	Socket.Output	The relevant `Output` object
+	getOutput() => {
+		refer new Output(socket);
+	}
+
+	##	Gets a `Socket.Input` object referring to the current instance of `Socket`
+	##	@return	Socket.Input	The relevant `Input` object
+	getInput() => {
+		refer new Input(socket);
+	}
+
+	##	Gets the value of the Socket's connecting address
+	##	@return	String	The relevant address
+	getAddress() => {
+		return address;
+	}
+
+	##	Gets the value of the Socket's connecting port
+	##	@return	Number	The relevant port
+	getPort() => {
+		return port;
+	}
+
+	##	Returns a `String` representation of the object
+	##	@return	String	Representation of the object
+	getString() => {
+		return address + ":" + str port
+	}
+
+	##	Container for the Output stream of a `Socket` object
+	struct Output class {
+		##	Contains a pointer to `DataOutputStream.class`
+		##	@field	Pointer
+		var out;
+
+		##	Constructor for `Socket.Output`
+		##	@param	socket	Pointer	Value referring to a `Socket.class` instance
+		init(final socket) => {
+			this.out = (_OUTER_CALL_ ("LIB_Socket", "OUT_OPEN", socket));
+		}
+
+		##	Sends data through the output stream
+		##	@param	string	String	Value to be sent
+		send(final string) => {
+			_OUTER_CALL_ ("LIB_Socket", "OUT_SEND", out, string);
+		}
+
+		##	Closes a `Socket.Output` object
+		close() => {
+			_OUTER_CALL_ ("LIB_Socket", "OUT_CLOSE", out);
+			out = null;
+		}
+	}
+
+	##	Container for the Input stream of a `Socket` object
+	struct Input class {
+		##	Contains a pointer to `DataInputStream.class`
+		##	@field	Pointer
+		var input;
+
+		##	Constructor for `Socket.Input`
+		##	@param	socket	Pointer	Value referring to a `Socket.class` instance
+		init(final socket) => {
+			this.input = (_OUTER_CALL_ ("LIB_Socket", "IN_OPEN", socket));
+		}
+
+		##	Reads in any incoming values to the Socket, pauses the thread until a value is resolved
+		##	@return	String	Value of data read
+		read() => {
+			return (_OUTER_CALL_ ("LIB_Socket", "IN_READ", input));
+		}
+
+		##	Closes a `Socket.Input` object
+		close() => {
+			_OUTER_CALL_ ("LIB_Socket", "IN_CLOSE", input);
+			input = null;
+		}
+	}
+}
+
+##	Container for the `Server` object
+struct Server class {
+	##	Contains a pointer to `ServerSocket.class`
+	##	@field	Pointer
+	var server;
+	##	Value of the Server's port
+	##	@field	Number
+	var port;
+
+	##	Constructor for `Server`
+	##	@param	port	Number	Value of the port on which the Server opens
+	init(final port) => {
+		this.server = (_OUTER_CALL_ ("LIB_Socket", "SERVER_OPEN", port));
+		this.port = port;
+	}
+
+	##	Closes a `Server` object
+	close() => {
+		_OUTER_CALL_ ("LIB_Socket", "SERVER_CLOSE", server);
+		server = null;
+	}
+
+	##	Waits for an incoming socket to connect to the server, pauses the thread until a socket connects
+	##	@return	Socket	Object of the connected socket
+	accept() => {
+		refer new Socket(_OUTER_CALL_ ("LIB_Socket", "SERVER_ACCEPT", server));
+	}
+
+	##	Gets the value of the Server's connecting port
+	##	@return	Number	The relevant port
+	getPort() => {
+		return port;
+	}
+
+	##	Returns a `String` representation of the object
+	##	@return	String	Representation of the object
+	getString() => {
+		return "LocalServer:" + str port;
+	}
+}

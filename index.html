@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Sonote</title>
+	<script>var exports = {};</script>
+
+	<link rel="stylesheet" href="res/main.css" />
+	<link rel="stylesheet" href="bin/fontawesome-free-5.14.0-web/css/all.min.css">
+	<script>window.$ = window.jQuery = require('jquery');</script>
+	<script type="text/javascript" src="./res/modernizr-mathml.js"></script>
+	<script type="text/javascript">
+		if (!Modernizr.mathml) {
+			var fileref = document.createElement("link")
+			fileref.setAttribute("rel", "stylesheet")
+			fileref.setAttribute("type", "text/css")
+			fileref.setAttribute("href", "res/math.css")
+			document.getElementsByTagName("head")[0].appendChild(fileref)
+		}
+	</script>
+
+</head>
+
+<body spellcheck=false>
+
+	<header id="titlebar">
+		<div id="drag-region">
+
+			<div id="window-title">
+				<span>Sonote</span>
+			</div>
+
+			<div id="window-controls">
+				<div class="button" id="min-button">
+					<img class="icon"
+						srcset="icons/min-k-10.png 1x, icons/min-k-12.png 1.25x, icons/min-k-15.png 1.5x, icons/min-k-15.png 1.75x, icons/min-k-20.png 2x, icons/min-k-20.png 2.25x, icons/min-k-24.png 2.5x, icons/min-k-30.png 3x, icons/min-k-30.png 3.5x"
+						draggable="false" />
+				</div>
+				<div class="button" id="max-button">
+					<img class="icon"
+						srcset="icons/max-k-10.png 1x, icons/max-k-12.png 1.25x, icons/max-k-15.png 1.5x, icons/max-k-15.png 1.75x, icons/max-k-20.png 2x, icons/max-k-20.png 2.25x, icons/max-k-24.png 2.5x, icons/max-k-30.png 3x, icons/max-k-30.png 3.5x"
+						draggable="false" />
+				</div>
+				<div class="button" id="restore-button">
+					<img class="icon"
+						srcset="icons/restore-k-10.png 1x, icons/restore-k-12.png 1.25x, icons/restore-k-15.png 1.5x, icons/restore-k-15.png 1.75x, icons/restore-k-20.png 2x, icons/restore-k-20.png 2.25x, icons/restore-k-24.png 2.5x, icons/restore-k-30.png 3x, icons/restore-k-30.png 3.5x"
+						draggable="false" />
+				</div>
+				<div class="button" id="close-button">
+					<img class="icon"
+						srcset="icons/close-k-10.png 1x, icons/close-k-12.png 1.25x, icons/close-k-15.png 1.5x, icons/close-k-15.png 1.75x, icons/close-k-20.png 2x, icons/close-k-20.png 2.25x, icons/close-k-24.png 2.5x, icons/close-k-30.png 3x, icons/close-k-30.png 3.5x"
+						draggable="false" />
+				</div>
+
+			</div>
+		</div>
+	</header>
+
+	<div id="main">
+		<div id="loads" style="display: none;">
+			<h1>Loaded Libraries</h1>
+			<div id="library-list">
+				<div class="library-name"><i class="far fa-file-code"></i> std.so</div>
+				<div class="library-name"><i class="far fa-file-code"></i> sonote.so</div>
+			</div>
+			<div id="library-bar">
+				<input id="library-new" type="text">
+				<button id="library-new-button" class="cb-button" onclick="addLibrary()"><i
+						class="fas fa-plus"></i></button>
+			</div>
+		</div>
+		<div id="nav">
+			<button class="navbuttons" onclick="showLibraries()"><i class="fas fa-list"></i></button>
+		</div>
+		<div id="notebook">
+			<div id="wall">
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript" src="build/graphs.js">
+	</script>
+	<script type="text/javascript" src="build/syntax.js">
+	</script>
+	<script type="text/javascript" src="build/sono.js">
+	</script>
+	<script>
+		require('./res/renderer.js')
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,96 @@
+# Benjamin Park
+# 02-08-2020
+
+import "LIB_FileIO";
+
+struct File class {
+	var pointer;
+
+	init(final filename) => {
+		this.pointer = _OUTER_CALL_ ("LIB_FileIO", "INIT", filename);
+	}
+
+	exists() => {
+		return _OUTER_CALL_ ("LIB_FileIO", "EXISTS", this.pointer);
+	}
+
+	create() => {
+		return _OUTER_CALL_ ("LIB_FileIO", "CREATE", this.pointer);
+	}
+
+	getString() => {
+		return str this.pointer;
+	}
+
+	getReader() => {
+		refer new Reader(this.pointer);
+	}
+
+	getWriter() => {
+		refer new Writer(this.pointer);
+	}
+
+	struct Reader class {
+		var pointer;
+
+		init(ref pointer) => {
+			this.pointer = (_OUTER_CALL_ ("LIB_FileIO", "READER_INIT", pointer));
+		}
+
+		readLine() => {
+			return _OUTER_CALL_ ("LIB_FileIO", "READER_GETLINE", pointer);
+		}
+
+		read(i) => {
+			pointer == null then {
+				return null;
+			}
+			i == null then {
+				i = 1;
+			}
+			var s = "";
+			j in {0 until i} do {
+				var c = (_OUTER_CALL_ ("LIB_FileIO", "READER_GET", pointer));
+				c == null then {
+					s == "" then {
+						s = null;
+					}
+					break;
+				} else {
+					s += c;
+				}
+			}
+			return s;
+		}
+
+		close() => {
+			_OUTER_CALL_ ("LIB_FileIO", "READER_CLOSE", pointer);
+			pointer = null;
+		}
+
+		getString() => {
+			return str this.pointer;
+		}
+	}
+
+	struct Writer class {
+		var pointer;
+
+		init(ref pointer) => {
+			this.pointer = (_OUTER_CALL_ ("LIB_FileIO", "WRITER_INIT", pointer));
+		}
+
+		write(ref string) => {
+			_OUTER_CALL_ ("LIB_FileIO", "WRITER_WRITE", pointer, string);
+		}
+
+		close() => {
+			_OUTER_CALL_ ("LIB_FileIO", "WRITER_CLOSE", pointer);
+			pointer = null;
+		}
+
+		getString() => {
+			return str this.pointer;
+		}
+	}
+}
