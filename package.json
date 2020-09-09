@@ -1,23 +1,25 @@
 {
-	"name": "sonoelectron",
+	"name": "sonote",
 	"version": "1.0.0",
 	"description": "",
 	"main": "build/main.js",
 	"scripts": {
 		"rebuild-java": "cd node_modules/java && node-gyp rebuild --target=10.1.1 --arch=x64 --dist-url=https://electronjs.org/headers && node postInstall.js",
+		"rebuild-java-debug": "cd node_modules/java && node-gyp rebuild --debug --target=10.1.1 --arch=x64 --dist-url=https://electronjs.org/headers && node postInstall.js",
 		"start": "electron .",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"tsc": "tsc"
+		"tsc": "tsc",
+		"build": "tsc && build.bat"
 	},
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
+		"@types/jquery": "^3.5.1",
 		"@types/java": "^0.9.1",
 		"@types/sortablejs": "^1.10.6",
 		"electron-rebuild": "^2.0.2"
 	},
 	"dependencies": {
-		"@types/jquery": "^3.5.1",
 		"chart.js": "^2.9.3",
 		"electron": "^10.1.1",
 		"java": "^0.12.1",

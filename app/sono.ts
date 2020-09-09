@@ -1,14 +1,9 @@
 import { ipcRenderer } from 'electron';
 import Sortable from 'sortablejs';
 
-ipcRenderer.on('code-finished', function (event, arg: { id: number, result: any }) {
+ipcRenderer.on('code-finished', function (_event, arg: { id: number, result: any }) {
 	document.getElementById(`cbo-${arg.id}`)!.innerHTML = renderDatum(arg.result, 0);
 	document.getElementById(`rt-${arg.id}`)!.style.display = "none";
-
-	if (has_error[arg.id]) {
-		document.getElementById(`cbp-${arg.id}`)!.innerHTML = '';
-		has_error[arg.id] = false;
-	}
 
 	Object.keys(new_charts).forEach((key) => {
 		createChart(`chart-${key}`, new_charts[key].graph);
@@ -26,7 +21,7 @@ function escapeHtml(unsafe: string): string {
 		.replace(/'/g, '&#039;');
 }
 
-ipcRenderer.on('listen', function (event, result: { header: string, id: number, body: string }) {
+ipcRenderer.on('listen', function (_event, result: { header: string, id: number, body: string }) {
 	switch (result.header) {
 		case 'OUT':
 			if (has_error[result.id]) {
@@ -67,7 +62,7 @@ function addCodeBox(id: number, top: boolean): void {
 		</div>
 		<div class="codebox-output" id="cbo-${boxN}"></div>
 		<div class="codebox-input-cont" id="cbic-${boxN}">
-		<div contenteditable="true" class="codebox-input" id="cbi-${boxN}" oninput="refresh(${boxN})" onblur="refresh(${boxN})"></div>
+		<div contenteditable="true" class="codebox-input" id="cbi-${boxN}" oninput="refresh(${boxN}, 300)" onblur="refresh(${boxN}, 0)"></div>
 		<div class="codebox-input-print" id="cbip-${boxN}"><div></div></div>
 		</div>
 		<div class="codebox-print" id="cbp-${boxN}"></div>
@@ -101,19 +96,26 @@ function pinCodeBox(boxN: number): void {
 function closeCodeBox(boxN: number): void {
 	if (current > 1) {
 		document.getElementById(`cb-${boxN}`)!.remove();
-		refresh(undefined);
+		refresh(undefined, 0);
 		current--;
 	}
 }
 
-function refresh(boxN: number | undefined): void {
+let writingTimeout : any = null;
+
+function refresh(boxN: number | undefined, delay :number): void {
 	if (boxN != undefined) {
 		const content = codeFormatter(document.getElementById(`cbi-${boxN}`)!.innerText).replace(/\n\n/gi, "\n").replace(/\t/gi, `<span style="white-space:pre">\t</span>`).split("\n").map((e: string) => {
 			return `<div>${e}</div>`
 		}).join("");
 		document.getElementById(`cbip-${boxN}`)!.innerHTML = content;
 	}
-	refreshOutputs();
+
+	if (writingTimeout != null)
+		clearTimeout(writingTimeout);
+	writingTimeout = setTimeout(() => {
+		refreshOutputs();
+	}, delay);
 }
 
 function refreshOutputs(): void {
@@ -326,6 +328,6 @@ addCodeBox(-1, false);
 Sortable.create(document.getElementById('wall')!, {
 	animation: 150,
 	onUpdate: () => {
-		refresh(undefined);
+		refresh(undefined, 0);
 	}
 });

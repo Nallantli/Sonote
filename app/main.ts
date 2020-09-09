@@ -3,6 +3,10 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import java from 'java';
 
+process.on('uncaughtException', (err) => {
+	console.log(err);
+});
+
 let mainWindow: any;
 
 function createWindow() {
@@ -43,7 +47,7 @@ app.on('activate', function () {
 java.options.push("-Dfile.encoding=UTF-8");
 java.options.push('-Xrs');
 java.options.push('-Djava.awt.headless=true');
-java.classpath.push("./bin");
+java.classpath.push("./build");
 java.classpath.push("./bin/SonoClient.jar");
 java.classpath.push("./bin/external/json-simple-1.1.jar");
 
@@ -86,11 +90,12 @@ function executeBuffer(arg: { head: string, body: any }, event: any): void {
 	switch (arg.head) {
 		case "run":
 			let pairs: any[] = [];
-			arg.body.forEach((p: { id: number, body: string }) => {
-				pairs.push(java.newInstanceSync("BoxPair", p.id, p.body));
-			});
 			try {
-				decoder.runSync(java.newArray("BoxPair", pairs));
+				arg.body.forEach((p: { id: number, body: string }) => {
+					pairs.push(java.newInstanceSync("BoxPair", p.id, p.body));
+				});
+				let objArr = java.newArray("java.lang.Object", pairs);
+				decoder.runSync(objArr);
 			} catch (err) {
 				console.log(err);
 				console.log(arg);

@@ -2,6 +2,7 @@ import java.nio.charset.StandardCharsets;
 
 import client.SonoClient;
 import main.SonoWrapper;
+import main.base.ConsoleColors;
 import main.sono.Datum;
 import main.sono.Scope;
 
@@ -10,13 +11,13 @@ class ThreadWrapper extends Thread {
 	private final SonoWrapper wrapper;
 	private final String directory;
 	private final String filename;
-	private final BoxPair[] code;
+	private final Object[] code;
 	private final boolean drawTree;
 	private final Scope override;
 	private final Listener listener;
 
 	public ThreadWrapper(final Decoder decoder, final SonoWrapper wrapper, final String directory,
-			final String filename, final BoxPair[] code, final boolean drawTree, final Scope override,
+			final String filename, final Object[] code, final boolean drawTree, final Scope override,
 			final Listener listener) {
 		this.decoder = decoder;
 		this.wrapper = wrapper;
@@ -30,16 +31,28 @@ class ThreadWrapper extends Thread {
 
 	@Override
 	public void run() {
+		if (code == null) {
+			System.out.println("CODE NULL");
+			return;
+		}
 		try {
-			for (final BoxPair b : code) {
+			for (final Object o : code) {
 				if (this.isInterrupted()) {
-					decoder.sendDatum(null, 0);
 					return;
 				}
-				if (b == null) {
-					decoder.sendDatum(null, 0);
-					return;
+
+				if (o == null || o.getClass() != BoxPair.class) {
+					if (o == null)
+						System.out.println("BOX PAIR NULL");
+					else
+						System.out.println("NOT BOX PAIR\t" + o.getClass() + "\t" + o.toString());
+					continue;
 				}
+
+				final BoxPair b = (BoxPair) o;
+
+				System.out
+						.println("EXEC\t" + b.getID() + "\t" + ConsoleColors.BLUE + b.getCode() + ConsoleColors.RESET);
 				final Object[] overrides = { new StandardOutput(listener, b.getID()),
 						new StandardError(listener, b.getID()), null };
 				final Datum result = wrapper.run(directory, filename,
@@ -48,7 +61,6 @@ class ThreadWrapper extends Thread {
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
-			decoder.sendDatum(null, 0);
 		}
 	}
 }
@@ -68,7 +80,7 @@ public class Decoder {
 		this.wrapper = SonoClient.startClient(null, false, false, null, null, null, this.mainScope);
 	}
 
-	public void run(final BoxPair[] code) {
+	public void run(final Object[] code) {
 		if (current != null)
 			current.interrupt();
 		current = new ThreadWrapper(this, wrapper, null, null, code, false, new Scope(null, mainScope, false),

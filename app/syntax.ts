@@ -37,9 +37,8 @@ function codeFormatter(elmntTxt : string) {
 	function sonoMode(txt : string) {
 		var rest = txt,
 			done = "",
-			esc = [],
 			i, cc, tt = "",
-			sfnuttpos, dfnuttpos, wfnuttpos, compos, comlinepos, keywordpos, numpos, mypos, dotpos, y;
+			sfnuttpos, dfnuttpos, wfnuttpos, comlinepos, keywordpos, numpos, mypos, dotpos, y;
 		for (i = 0; i < rest.length; i++) {
 			cc = rest.substr(i, 1);
 			tt += cc;
