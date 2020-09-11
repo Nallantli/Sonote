@@ -1,14 +1,14 @@
 public class BoxPair {
-	private final int id;
+	private final int boxID;
 	private final String code;
 
-	public BoxPair(final int id, final String code) {
-		this.id = id;
+	public BoxPair(final int boxID, final String code) {
+		this.boxID = boxID;
 		this.code = code;
 	}
 
-	public int getID() {
-		return this.id;
+	public int getBoxID() {
+		return this.boxID;
 	}
 
 	public String getCode() {

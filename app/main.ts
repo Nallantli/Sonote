@@ -14,12 +14,13 @@ function createWindow() {
 		width: 800,
 		height: 600,
 		frame: false,
-		backgroundColor: '#FFF',
 		webPreferences: {
 			nodeIntegration: true,
 			enableRemoteModule: true
 		}
 	});
+
+	mainWindow.removeMenu();
 
 	mainWindow.loadFile('index.html');
 
@@ -72,10 +73,8 @@ let listener = java.newProxy('Listener', {
 
 let decoder = java.newInstanceSync("Decoder", listener);
 
-decoder.loadLibrarySync('sonote.so', null)
-
 let execute_buffer: { event: any, arg: any }[] = [];
-let buffer_timer = 50;
+let buffer_timer = 10;
 
 setInterval(() => {
 	if (execute_buffer.length > 0) {
@@ -114,6 +113,9 @@ function executeBuffer(arg: { head: string, body: any }, event: any): void {
 					body: arg.body
 				});
 			}
+			break;
+		case 'new':
+			decoder.newScopeSync();
 			break;
 	}
 }

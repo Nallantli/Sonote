@@ -11,17 +11,18 @@
 		"tsc": "tsc",
 		"build": "tsc && build.bat"
 	},
-	"author": "",
+	"author": "Benjamin Park",
 	"license": "ISC",
 	"devDependencies": {
-		"@types/jquery": "^3.5.1",
 		"@types/java": "^0.9.1",
+		"@types/jquery": "^3.5.1",
 		"@types/sortablejs": "^1.10.6",
 		"electron-rebuild": "^2.0.2"
 	},
 	"dependencies": {
 		"chart.js": "^2.9.3",
 		"electron": "^10.1.1",
+		"hotkeys-js": "^3.8.1",
 		"java": "^0.12.1",
 		"jquery": "^3.5.1",
 		"sortablejs": "^1.10.2",

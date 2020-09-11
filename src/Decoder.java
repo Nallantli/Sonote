@@ -50,14 +50,11 @@ class ThreadWrapper extends Thread {
 				}
 
 				final BoxPair b = (BoxPair) o;
-
-				System.out
-						.println("EXEC\t" + b.getID() + "\t" + ConsoleColors.BLUE + b.getCode() + ConsoleColors.RESET);
-				final Object[] overrides = { new StandardOutput(listener, b.getID()),
-						new StandardError(listener, b.getID()), null };
+				final Object[] overrides = { new StandardOutput(listener, b.getBoxID()),
+						new StandardError(listener, b.getBoxID()), null };
 				final Datum result = wrapper.run(directory, filename,
 						java.net.URLDecoder.decode(b.getCode(), StandardCharsets.UTF_8), drawTree, override, overrides);
-				decoder.sendDatum(result, b.getID());
+				decoder.sendDatum(result, b.getBoxID());
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -69,15 +66,12 @@ public class Decoder {
 	private Thread current;
 	private final Listener listener;
 
-	private final Scope mainScope;
-	private final SonoWrapper wrapper;
+	private Scope mainScope;
+	private SonoWrapper wrapper;
 
 	public Decoder(final Listener listener) throws InterruptedException {
 		this.listener = listener;
-		this.mainScope = new Scope(null, null, false);
-		SonoClient.setPath();
-		SonoClient.loadData();
-		this.wrapper = SonoClient.startClient(null, false, false, null, null, null, this.mainScope);
+		newScope();
 	}
 
 	public void run(final Object[] code) {
@@ -88,12 +82,19 @@ public class Decoder {
 		current.start();
 	}
 
+	public void newScope() throws InterruptedException {
+		this.mainScope = new Scope(null, null, false);
+		SonoClient.setPath();
+		SonoClient.loadData();
+		this.wrapper = SonoClient.startClient(null, false, false, null, null, null, this.mainScope);
+	}
+
 	public Datum loadLibrary(final String library, final Object[] overrides) {
 		final String newCode = java.net.URLDecoder.decode(library, StandardCharsets.UTF_8);
 		return wrapper.run(".", null, "load \"" + newCode + "\";", false, mainScope, overrides);
 	}
 
-	public void sendDatum(final Datum datum, final int id) {
-		listener.sendData("DATUM", null, id, datum);
+	public void sendDatum(final Datum datum, final int boxID) {
+		listener.sendData("DATUM", null, boxID, datum);
 	}
 }

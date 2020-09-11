@@ -8,6 +8,8 @@
 
 	<link rel="stylesheet" href="res/main.css" />
 	<link rel="stylesheet" href="bin/fontawesome-free-5.14.0-web/css/all.min.css">
+	<link rel="stylesheet" href="res/iosevka/iosevka-ss05.css">
+	<link rel="stylesheet" href="res/ibm-plex/css/ibm-plex.css">
 	<script>window.$ = window.jQuery = require('jquery');</script>
 	<script type="text/javascript" src="./res/modernizr-mathml.js"></script>
 	<script type="text/javascript">
@@ -23,46 +25,101 @@
 </head>
 
 <body spellcheck=false>
-
-	<header id="titlebar">
-		<div id="drag-region">
-
-			<div id="window-title">
-				<span>Sonote</span>
+	<div id="titlebar">
+		<img id="favicon" src="res/icon.svg" alt="sonote">
+		<div id="menubar">
+			<div class="dropdown">
+				<button class="dropbtn">File</button>
+				<div class="dropdown-content">
+					<table>
+						<tr onclick="newFile()">
+							<td class="menu-key">New</td>
+							<td class="menu-shortcut">Ctrl+N</td>
+						</tr>
+					</table>
+					<hr>
+					<table>
+						<tr onclick="openFile()">
+							<td class="menu-key">Open</td>
+							<td class="menu-shortcut">Ctrl+O</td>
+						</tr>
+					</table>
+					<hr>
+					<table>
+						<tr onclick="saveFile()">
+							<td class="menu-key">Save</td>
+							<td class="menu-shortcut">Ctrl+S</td>
+						</tr>
+						<tr onclick="saveFile(true)">
+							<td class="menu-key">Save as...</td>
+							<td class="menu-shortcut">Ctrl+Shift+S</td>
+						</tr>
+					</table>
+				</div>
 			</div>
-
-			<div id="window-controls">
-				<div class="button" id="min-button">
-					<img class="icon"
-						srcset="icons/min-k-10.png 1x, icons/min-k-12.png 1.25x, icons/min-k-15.png 1.5x, icons/min-k-15.png 1.75x, icons/min-k-20.png 2x, icons/min-k-20.png 2.25x, icons/min-k-24.png 2.5x, icons/min-k-30.png 3x, icons/min-k-30.png 3.5x"
-						draggable="false" />
+			<div class="dropdown">
+				<button class="dropbtn">Book</button>
+				<div class="dropdown-content">
+					<table>
+						<tr onclick="addWall(true)">
+							<td class="menu-key">New Page</td>
+							<td class="menu-shortcut">Ctrl+Shift+N</td>
+						</tr>
+					</table>
+					<hr>
+					<table>
+						<tr onclick="closeCurrentWall()">
+							<td class="menu-key">Close Page</td>
+							<td class="menu-shortcut">Ctrl+W</td>
+						</tr>
+					</table>
 				</div>
-				<div class="button" id="max-button">
-					<img class="icon"
-						srcset="icons/max-k-10.png 1x, icons/max-k-12.png 1.25x, icons/max-k-15.png 1.5x, icons/max-k-15.png 1.75x, icons/max-k-20.png 2x, icons/max-k-20.png 2.25x, icons/max-k-24.png 2.5x, icons/max-k-30.png 3x, icons/max-k-30.png 3.5x"
-						draggable="false" />
+			</div>
+			<div class="dropdown">
+				<button class="dropbtn">Help</button>
+				<div class="dropdown-content">
+					<table>
+						<tr onclick="devTools(true)">
+							<td class="menu-key">Toggle Developer Tools</td>
+							<td class="menu-shortcut">Ctrl+Shift+I</td>
+						</tr>
+					</table>
 				</div>
-				<div class="button" id="restore-button">
-					<img class="icon"
-						srcset="icons/restore-k-10.png 1x, icons/restore-k-12.png 1.25x, icons/restore-k-15.png 1.5x, icons/restore-k-15.png 1.75x, icons/restore-k-20.png 2x, icons/restore-k-20.png 2.25x, icons/restore-k-24.png 2.5x, icons/restore-k-30.png 3x, icons/restore-k-30.png 3.5x"
-						draggable="false" />
-				</div>
-				<div class="button" id="close-button">
-					<img class="icon"
-						srcset="icons/close-k-10.png 1x, icons/close-k-12.png 1.25x, icons/close-k-15.png 1.5x, icons/close-k-15.png 1.75x, icons/close-k-20.png 2x, icons/close-k-20.png 2.25x, icons/close-k-24.png 2.5x, icons/close-k-30.png 3x, icons/close-k-30.png 3.5x"
-						draggable="false" />
-				</div>
-
 			</div>
 		</div>
-	</header>
+
+		<div id="window-title">Sonote</div>
+
+		<div id="window-controls">
+			<div class="button" id="min-button">
+				<img class="icon"
+					srcset="res/icons/min-k-10.png 1x, res/icons/min-k-12.png 1.25x, res/icons/min-k-15.png 1.5x, res/icons/min-k-15.png 1.75x, res/icons/min-k-20.png 2x, res/icons/min-k-20.png 2.25x, res/icons/min-k-24.png 2.5x, res/icons/min-k-30.png 3x, res/icons/min-k-30.png 3.5x"
+					draggable="false" />
+			</div>
+			<div class="button" id="max-button">
+				<img class="icon"
+					srcset="res/icons/max-k-10.png 1x, res/icons/max-k-12.png 1.25x, res/icons/max-k-15.png 1.5x, res/icons/max-k-15.png 1.75x, res/icons/max-k-20.png 2x, res/icons/max-k-20.png 2.25x, res/icons/max-k-24.png 2.5x, res/icons/max-k-30.png 3x, res/icons/max-k-30.png 3.5x"
+					draggable="false" />
+			</div>
+			<div class="button" id="restore-button">
+				<img class="icon"
+					srcset="res/icons/restore-k-10.png 1x, res/icons/restore-k-12.png 1.25x, res/icons/restore-k-15.png 1.5x, res/icons/restore-k-15.png 1.75x, res/icons/restore-k-20.png 2x, res/icons/restore-k-20.png 2.25x, res/icons/restore-k-24.png 2.5x, res/icons/restore-k-30.png 3x, res/icons/restore-k-30.png 3.5x"
+					draggable="false" />
+			</div>
+			<div class="button" id="close-button">
+				<img class="icon"
+					srcset="res/icons/close-k-10.png 1x, res/icons/close-k-12.png 1.25x, res/icons/close-k-15.png 1.5x, res/icons/close-k-15.png 1.75x, res/icons/close-k-20.png 2x, res/icons/close-k-20.png 2.25x, res/icons/close-k-24.png 2.5x, res/icons/close-k-30.png 3x, res/icons/close-k-30.png 3.5x"
+					draggable="false" />
+			</div>
+
+		</div>
+	</div>
 
 	<div id="main">
 		<div id="loads" style="display: none;">
 			<h1>Loaded Libraries</h1>
 			<div id="library-list">
 				<div class="library-name"><i class="far fa-file-code"></i> std.so</div>
-				<div class="library-name"><i class="far fa-file-code"></i> sonote.so</div>
 			</div>
 			<div id="library-bar">
 				<input id="library-new" type="text">
@@ -74,10 +131,23 @@
 			<button class="navbuttons" onclick="showLibraries()"><i class="fas fa-list"></i></button>
 		</div>
 		<div id="notebook">
-			<div id="wall">
+			<div id="upperbar">
+				<ul id="tabs"></ul>
+				<div id="addcont">
+					<button id="newtab" onclick="addWall(true)"><i class="fas fa-plus-circle"></i></button>
+				</div>
 			</div>
+			<div id="wall-cont"></div>
 		</div>
 	</div>
+
+	<div id="status-bar">
+		<span id="status-icon"><i class="fas fa-check"></i></span>
+		<span id="status-operation">Idle</span>
+		<span id="status-wallname"></span>
+		<span id="status-filename"></span>
+	</div>
+
 	<script type="text/javascript" src="build/graphs.js">
 	</script>
 	<script type="text/javascript" src="build/syntax.js">

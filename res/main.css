@@ -2,13 +2,21 @@
 	--bg-color: #ffffff;
 	--select-color: #f6f6f6;
 	--secondary-foreground: #bbcde5;
-	--border-color: #ebebeb;
+	--secondary-bg: #ebebeb;
+	--border-color: #aaaaaa;
 	--accent-color: #008ee0;
 	--move-color: #bbcde5;
 	--pin-color: #fdfcdc;
 	--foreground-color: #000000;
 	--button-hover-color: #222222;
+	--shadow-color: #000000;
 	--input-color: #f9f8f8;
+	--sans-font: 'IBM Plex Sans', sans-serif;
+	--serif-font: 'IBM Plex Serif', Serif;
+	--mono-font: 'Iosevka SS05', monospace;
+	--titlebar-height: 28px;
+	--status-bar-height: 20px;
+	--titlebar-font-size: 13px;
 }
 
 
@@ -36,7 +44,7 @@ body {
 }
 
 body {
-	font-family: "Segoe UI", sans-serif;
+	font-family: var(--sans-font);
 	background: var(--bg-color);
 	color: var(--foreground-color);
 	overflow: hidden;
@@ -55,20 +63,21 @@ p {
 }
 
 #titlebar {
+	user-select: none;
 	display: block;
-	position: fixed;
+	position: relative;
 	top: 0;
-	height: 24px;
+	height: var(--titlebar-height);
 	background-color: var(--bg-color);
 	border-bottom: 1px solid var(--border-color);
-	width: 100%;
 	padding: 0;
+	z-index: 99;
 }
 
 #main {
 	position: absolute;
-	top: 24px;
-	bottom: 0;
+	top: var(--titlebar-height);
+	bottom: var(--status-bar-height);
 	left: 0;
 	right: 0;
 	margin: 0;
@@ -76,45 +85,28 @@ p {
 	overflow-y: hidden;
 }
 
-#titlebar #drag-region {
-	width: 100%;
-	height: 100%;
-	-webkit-app-region: drag;
-}
-
 #titlebar {
 	color: var(--foreground-color);
 }
 
-#titlebar #drag-region {
-	display: grid;
-	grid-template-columns: auto 138px;
-}
-
 #window-title {
-	grid-column: 1;
-	display: flex;
-	align-items: center;
-	margin-left: 8px;
-	overflow: hidden;
-	font-family: "Segoe UI", sans-serif;
-	font-size: 12px;
-}
-
-.maximized #window-title {
-	margin-left: 12px;
-}
-
-#window-title span {
-	overflow: hidden;
+	margin-right: 135px;
 	text-overflow: ellipsis;
-	white-space: nowrap;
-	line-height: 1.5;
+	-webkit-app-region: drag;
+	display: block;
+	align-items: center;
+	text-align: center;
+	padding: 5px;
+	height: var(--titlebar-height);
+	overflow: hidden;
+	font-family: var(--sans-font);
+	font-size: var(--titlebar-font-size);
+	z-index: 99;
 }
 
 #window-controls {
 	display: grid;
-	grid-template-columns: repeat(3, 46px);
+	grid-template-columns: repeat(3, 45px);
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -210,7 +202,7 @@ p {
 /* Handle */
 
 ::-webkit-scrollbar-thumb {
-	background: var(--border-color);
+	background: var(--secondary-bg);
 }
 
 
@@ -255,16 +247,33 @@ p {
 #notebook {
 	position: absolute;
 	right: 0;
-	overflow-y: scroll;
+	overflow-y: hidden;
 	height: 100%;
 	width: calc(100% - 50px);
 }
 
-#wall {
+.wallname-input {
+	margin: 0;
+	font-style: italic;
+	padding: 2px;
+	border-bottom: 1px var(--foreground-color) dashed;
+	font-family: var(--sans-font);
+}
+
+.wallname-input:focus {
+	outline: none;
+}
+
+#wall-cont {
+	overflow-y: scroll;
+	height: calc(100% - 30px);
+}
+
+.wall {
 	margin: auto;
 	max-width: 700px;
 	padding: 0;
-	height: calc(100% - 24px);
+	height: calc(100% - var(--titlebar-height));
 }
 
 
@@ -283,13 +292,13 @@ p {
 
 #library-new {
 	font-size: 14px;
-	font-family: 'Iosevka SS05', monospace;
+	font-family: var(--mono-font);
 }
 
 .library-name {
 	padding: 5px;
 	font-size: 14px;
-	font-family: 'Iosevka SS05', monospace;
+	font-family: var(--mono-font);
 	border: 1px solid var(--border-color);
 	border-right: none;
 }
@@ -303,6 +312,10 @@ h1 {
 
 button:focus {
 	outline: 0;
+}
+
+.codebox-input span {
+	background: none !important;
 }
 
 #library-bar {
@@ -324,23 +337,20 @@ button:focus {
 }
 
 .codebox {
+	display: block;
 	padding: 0px;
-	margin: 20px;
-	margin-left: 3px;
+	margin: 15px;
+	margin-bottom: 25px;
 	overflow: hidden;
-	transition: all 0.2s ease-in-out;
+	/*transition: all 0.2s ease-in-out; */
 	border-radius: 0px;
-	border-left: 1px solid var(--accent-color);
+	border: 1px solid var(--shadow-color);
+	box-shadow: 5px 5px 0px 0px var(--shadow-color);
 }
 
-.sortable-ghost {
-	filter: invert(100%);
-}
-
-.codebox:hover {
-	margin-left: 0;
-	border-left: 4px solid var(--accent-color);
-	border-radius: 10px;
+.codebox.sortable-chosen {
+	border: 1px solid var(--accent-color);
+	box-shadow: 5px 5px 0px 0px var(--accent-color);
 }
 
 .codebox:hover .codebox-bar {
@@ -350,10 +360,11 @@ button:focus {
 .codebox-input,
 .codebox-input-print {
 	padding: 10px;
-	font-family: 'Iosevka SS05', monospace;
+	font-family: var(--mono-font);
 	tab-size: 4;
 	min-height: 2.5em;
 	outline: none;
+	white-space: pre;
 }
 
 .codebox-input {
@@ -370,9 +381,10 @@ button:focus {
 }
 
 .codebox-input-cont {
-	border: 1px solid var(--accent-color);
+	border: 1px solid var(--shadow-color);
 	background-color: var(--input-color);
 	border-left: none;
+	border-right: none;
 	position: relative;
 	white-space: nowrap;
 	overflow: hidden;
@@ -399,17 +411,17 @@ button:focus {
 }
 
 .spinner {
-	margin-right: 10px;
-    animation: spin 2s linear infinite;
+	animation: spin 2s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
 }
 
 .dict-cont {
@@ -480,7 +492,7 @@ td {
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
-	border-right: 1px solid var(--border-color);
+	border-right: 1px solid var(--secondary-bg);
 	padding: 0 .5em;
 	width: 2em;
 	font-size: 14px;
@@ -505,7 +517,7 @@ td {
 	counter-increment: line;
 	content: counter(line);
 	display: inline-block;
-	border-right: 1px solid var(--border-color);
+	border-right: 1px solid var(--secondary-bg);
 	font-size: 14px;
 	height: 1.5em;
 	padding: 0;
@@ -527,16 +539,16 @@ td {
 }
 
 .codebox-output {
-	font-family: 'Iosevka SS05', monospace;
-	padding: 0;
+	font-family: var(--mono-font);
+	padding: 5px;
 }
 
 .codebox-print {
 	white-space: pre-wrap;
-	font-family: 'Iosevka SS05', monospace;
+	font-family: var(--mono-font);
 	font-style: italic;
 	color: var(--secondary-foreground);
-	padding: 0;
+	padding: 5px;
 	tab-size: 4;
 }
 
@@ -575,5 +587,251 @@ td {
 	vertical-align: middle;
 	margin-top: -5px;
 	margin-left: 15px;
-	font-family: 'Iosevka SS05', monospace;
+	font-family: var(--mono-font);
+}
+
+#upperbar {
+	margin: 0;
+	padding: 0;
+	height: 30px;
+	background-color: var(--shadow-color);
+}
+
+#addcont {
+	margin: 0;
+	padding: 0;
+	display: block;
+	float: right;
+}
+
+#newtab {
+	display: inline-block;
+	margin: 0;
+	padding: 4px;
+	height: 30px;
+	width: 30px;
+	background: none;
+	border: none;
+	color: var(--secondary-foreground);
+	outline: none;
+	transition: all 0.1s ease-in-out;
+}
+
+#newtab:hover {
+	color: white;
+}
+
+#tabs {
+	margin: 0;
+	padding: 0;
+	height: 30px;
+	display: flex;
+	float: left;
+	width: calc(100% - 30px);
+	white-space: nowrap;
+	overflow-x: scroll;
+	overflow-y: hidden;
+	-ms-overflow-style: none;
+	/* IE and Edge */
+	scrollbar-width: none;
+	/* Firefox */
+}
+
+#tabs::-webkit-scrollbar {
+	display: none;
+}
+
+.closetab {
+	display: inline-block;
+	opacity: 0;
+	margin: 0;
+	padding: 4px;
+	padding-right: 10px;
+	padding-left: 0;
+	height: 30px;
+	width: 30px;
+	background: none;
+	border: none;
+	color: #ff6666;
+	outline: none;
+	transition: all 0.1s ease-in-out;
+}
+
+.opentab {
+	margin: 0;
+	padding: 4px;
+	padding-right: 5px;
+	display: inline-block;
+	height: 30px;
+	background: none;
+	border: none;
+	color: inherit;
+	outline: none;
+}
+
+.opentab i {
+	padding-right: 10px;
+}
+
+.tablinks:hover>.closetab {
+	opacity: 1;
+}
+
+.tablinks {
+	margin: 0;
+	padding: 0;
+	display: block;
+	float: left;
+	height: 30px;
+	background: var(--secondary-bg);
+	border: none;
+	border-right: 1px var(--button-hover-color) solid;
+	border-bottom: 1px var(--button-hover-color) solid;
+	color: var(--button-hover-color);
+	text-align: center;
+}
+
+.tablinks .tab-icon {
+	margin: 0;
+	padding: 4px;
+	padding-left: 10px;
+	display: inline-block;
+	height: 30px;
+	font-size: 12px;
+	color: var(--move-color);
+}
+
+.selectedtab .tab-icon {
+	color: var(--accent-color);
+}
+
+.selectedtab {
+	background: var(--bg-color);
+	color: var(--foreground-color);
+	border-bottom: none;
+}
+
+/* Dropdown Button */
+.dropbtn {
+	background-color: var(--bg-color);
+	color: var(--button-hover-color);
+	padding: 6px;
+	font-family: var(--sans-font);
+	font-size: var(--titlebar-font-size);
+	height: var(--titlebar-height);
+	border: none;
+}
+
+#menubar {
+	z-index: 98;
+	display: block;
+	float: left;
+	height: var(--titlebar-height);
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+	top: -1px;
+	position: relative;
+	display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+	padding-top: 5px;
+	padding-bottom: 5px;
+	display: none;
+	position: absolute;
+	background-color: var(--secondary-bg);
+	min-width: 250px;
+	box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.5);
+	z-index: -1;
+}
+
+.dropdown-content table {
+	border-collapse: collapse;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+	border: none;
+	color: var(--foreground-color);
+	font-size: var(--titlebar-font-size);
+}
+
+.menu-key {
+	padding: 5px;
+	padding-left: 15px;
+	text-align: left;
+}
+
+.menu-shortcut {
+	padding: 5px;
+	padding-right: 15px;
+	text-align: right;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content tr:hover {
+	cursor: pointer;
+	background-color: var(--secondary-foreground);
+}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+	background-color: var(--secondary-bg);
+}
+
+hr {
+	background-color: var(--border-color);
+	height: 1px;
+	margin: 5px;
+	border: none;
+}
+
+#status-bar {
+	user-select: none;
+	position: absolute;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+	height: var(--status-bar-height);
+	background-color: var(--button-hover-color);
+	color: var(--bg-color);
+	font-size: 12px;
+}
+
+#status-icon {
+	display: inline-block;
+	background-color: var(--accent-color);
+	color: var(--bg-color);
+	height: var(--status-bar-height);
+	width: 30px;
+	text-align: center;
+	font-size: 11px;
+	padding: 3px;
+}
+
+#status-bar span {
+	margin-right: 15px;
+}
+
+#status-operation {
+	font-style: italic;
+}
+
+#status-wallname {
+	font-weight: bold;
+}
+
+#favicon {
+	height: calc(var(--titlebar-height) - 10px);
+	float: left;
+	margin: 5px;
+	margin-right: 10px;
+	margin-left: 10px;
 }
