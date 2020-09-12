@@ -247,14 +247,3 @@ Vector::randomize(ref this) => {
 	}
 	return nv;
 }
-
-Vector::weave(ref this, ref vector) => {
-	length(this) != length(vector) then {
-		throw "Cannot weave() Vectors of unequal length";
-	}
-	var nv = alloc(length(this));
-	i in {0 until length(this)} do {
-		nv[i] = {this[i], vector[i]};
-	}
-	return nv;
-}

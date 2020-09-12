@@ -1,0 +1,36 @@
+body,
+html {
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+}
+
+#banner {
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: 0;
+	height: 300px;
+	background-color: #ffffff;
+}
+
+#logo {
+	margin-top: 50px;
+	margin-left: 221px;
+	height: 200px;
+}
+
+#info {
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	padding: 15px;
+	height: 70px;
+	font-size: 12px;
+	background-color: #ebebeb;
+	font-family: 'IBM Plex Sans';
+	color: black;
+	line-height: 0.5em;
+	overflow-y: scroll;
+}

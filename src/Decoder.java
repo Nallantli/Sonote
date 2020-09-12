@@ -1,6 +1,12 @@
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
 import client.SonoClient;
+import client.SonoDownloader;
 import main.SonoWrapper;
 import main.base.ConsoleColors;
 import main.sono.Datum;

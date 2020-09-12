@@ -1,32 +1,112 @@
 // Modules to control application life and create native browser window
 
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import java from 'java';
+import fs from 'fs';
+import { MessageBoxSyncOptions } from 'electron/main';
 
 process.on('uncaughtException', (err) => {
 	console.log(err);
 });
 
 let mainWindow: any;
+let execute_buffer: { event: any, arg: any }[] = [];
+let buffer_timer = 10;
+let decoder: any;
+let listener: any;
 
 function createWindow() {
-	mainWindow = new BrowserWindow({
-		width: 800,
-		height: 600,
-		frame: false,
-		webPreferences: {
-			nodeIntegration: true,
-			enableRemoteModule: true
-		}
-	});
+	//JAVA
+	java.options.push("-Dfile.encoding=UTF-8");
+	java.options.push('-Xrs');
+	java.options.push('-Djava.awt.headless=true');
+	java.classpath.push("./build");
 
-	mainWindow.removeMenu();
+	if (!fs.existsSync("bin")) {
+		dialog.showMessageBoxSync({
+			"title": "Download Sono Binaries",
+			"type": "info",
+			"message": "Sono binaries are not downloaded - the application will promptly install them locally. This may take a while."
+		});
 
-	mainWindow.loadFile('index.html');
+		mainWindow = new BrowserWindow({
+			width: 600,
+			height: 400,
+			frame: false,
+			resizable: false,
+			webPreferences: {
+				nodeIntegration: true,
+				enableRemoteModule: true
+			}
+		});
 
-	mainWindow.on('closed', () => {
-		mainWindow = null;
-	});
+		mainWindow.removeMenu();
+
+		mainWindow.loadFile('download.html');
+
+		listener = java.newProxy('DownloadProxy', {
+			sendData: function (value : string) {
+				mainWindow.webContents.send("listen", value);
+			}
+		});
+
+		let downloader = java.newInstanceSync('Downloader', listener);
+		downloader.downloadSono("bin", () => {
+			app.relaunch();
+			app.exit(0);
+		});
+	} else {
+		java.classpath.push("./bin/SonoClient.jar");
+		java.classpath.push("./bin/external/json-simple-1.1.jar");
+
+		listener = java.newProxy('Listener', {
+			sendData: function (header: string, body: string, id: number, datum: any) {
+				if (header == "DATUM") {
+					if (datum != null) {
+						mainWindow.webContents.send("code-finished", {
+							id: id,
+							result: datumJSON(datum)
+						});
+					}
+				} else {
+					mainWindow.webContents.send("listen", {
+						header: header,
+						body: body,
+						id: id
+					});
+				}
+			}
+		});
+
+		decoder = java.newInstanceSync("Decoder", listener);
+
+		setInterval(() => {
+			if (execute_buffer.length > 0) {
+				const arg = execute_buffer[0].arg;
+				const event = execute_buffer[0].event;
+				execute_buffer.shift();
+				executeBuffer(arg, event);
+			}
+		}, buffer_timer);
+
+		mainWindow = new BrowserWindow({
+			width: 800,
+			height: 600,
+			frame: false,
+			webPreferences: {
+				nodeIntegration: true,
+				enableRemoteModule: true
+			}
+		});
+
+		mainWindow.removeMenu();
+
+		mainWindow.loadFile('index.html');
+
+		mainWindow.on('closed', () => {
+			mainWindow = null;
+		});
+	}
 }
 
 app.on('ready', createWindow);
@@ -43,47 +123,12 @@ app.on('activate', function () {
 	}
 });
 
-//JAVA
-
-java.options.push("-Dfile.encoding=UTF-8");
-java.options.push('-Xrs');
-java.options.push('-Djava.awt.headless=true');
-java.classpath.push("./build");
-java.classpath.push("./bin/SonoClient.jar");
-java.classpath.push("./bin/external/json-simple-1.1.jar");
-
-let listener = java.newProxy('Listener', {
-	sendData: function (header: string, body: string, id: number, datum: any) {
-		if (header == "DATUM") {
-			if (datum != null) {
-				mainWindow.webContents.send("code-finished", {
-					id: id,
-					result: datumJSON(datum)
-				});
-			}
-		} else {
-			mainWindow.webContents.send("listen", {
-				header: header,
-				body: body,
-				id: id
-			});
-		}
-	}
+ipcMain.on("streamMain", function (event: any, arg: any) {
+	execute_buffer.push({
+		event: event,
+		arg: arg
+	});
 });
-
-let decoder = java.newInstanceSync("Decoder", listener);
-
-let execute_buffer: { event: any, arg: any }[] = [];
-let buffer_timer = 10;
-
-setInterval(() => {
-	if (execute_buffer.length > 0) {
-		const arg = execute_buffer[0].arg;
-		const event = execute_buffer[0].event;
-		execute_buffer.shift();
-		executeBuffer(arg, event);
-	}
-}, buffer_timer);
 
 function executeBuffer(arg: { head: string, body: any }, event: any): void {
 	switch (arg.head) {
@@ -119,13 +164,6 @@ function executeBuffer(arg: { head: string, body: any }, event: any): void {
 			break;
 	}
 }
-
-ipcMain.on("streamMain", function (event: any, arg: any) {
-	execute_buffer.push({
-		event: event,
-		arg: arg
-	});
-});
 
 function ruleComponentJSON(s: string): { type: string, data: any } {
 	let comp: { type: string, data: any } = { type: "undefined", data: null };

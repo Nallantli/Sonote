@@ -9,7 +9,7 @@
 		"start": "electron .",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"tsc": "tsc",
-		"build": "tsc && build.bat"
+		"build": "tsc && build-dl.bat"
 	},
 	"author": "Benjamin Park",
 	"license": "ISC",

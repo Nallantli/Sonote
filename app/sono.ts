@@ -205,7 +205,7 @@ ipcRenderer.on('listen', function (_event, result: { header: string, id: number,
 			alert(result.body);
 			break;
 		case 'LIB-LOAD':
-			updateLibList(result.body);
+			updateLibList(decodeURIComponent(result.body));
 			break;
 	}
 });
@@ -614,7 +614,7 @@ document.getElementById('library-new')!.addEventListener('keyup', (event) => {
 	}
 });
 
-addLibrary('sonote.so');
+addLibrary('res/sonote.so');
 
 Sortable.create(document.getElementById(`tabs`)!, {
 	animation: 150
