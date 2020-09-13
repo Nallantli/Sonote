@@ -5,16 +5,29 @@ html {
 	overflow: hidden;
 }
 
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
 #banner {
+	border-radius: 10px;
 	position: absolute;
 	top: 0;
 	right: 0;
 	left: 0;
-	height: 300px;
-	background-color: #ffffff;
+	height: 400px;
+	background-color: #aabbff22;
+	border: 1px solid #ffffff;
 }
 
 #logo {
+	animation: spin 4s ease-in-out infinite;
 	margin-top: 50px;
 	margin-left: 221px;
 	height: 200px;
@@ -28,9 +41,15 @@ html {
 	padding: 15px;
 	height: 70px;
 	font-size: 12px;
-	background-color: #ebebeb;
+	background-color: #ffffff;
 	font-family: 'IBM Plex Sans';
 	color: black;
 	line-height: 0.5em;
 	overflow-y: scroll;
+	border-radius: 10px;
+}
+
+
+::-webkit-scrollbar {
+	display: none;
 }

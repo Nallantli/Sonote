@@ -2,14 +2,15 @@
 	"name": "sonote",
 	"version": "1.0.0",
 	"description": "",
-	"main": "build/main.js",
+	"main": "main/main.js",
 	"scripts": {
 		"rebuild-java": "cd node_modules/java && node-gyp rebuild --target=10.1.1 --arch=x64 --dist-url=https://electronjs.org/headers && node postInstall.js",
 		"rebuild-java-debug": "cd node_modules/java && node-gyp rebuild --debug --target=10.1.1 --arch=x64 --dist-url=https://electronjs.org/headers && node postInstall.js",
 		"start": "electron .",
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"tsc": "tsc",
-		"build": "tsc && build-dl.bat"
+		"build": "tsc && build-dl.bat",
+		"dist": "electron-packager . \"Sonote\" --all --out=\"build\" --ignore=\".gitignore|.vscode|app|bin|bin-java|build-dl.bat\""
 	},
 	"author": "Benjamin Park",
 	"license": "ISC",
@@ -17,11 +18,13 @@
 		"@types/java": "^0.9.1",
 		"@types/jquery": "^3.5.1",
 		"@types/sortablejs": "^1.10.6",
+		"electron": "^10.1.1",
+		"electron-packager": "^15.1.0",
 		"electron-rebuild": "^2.0.2"
 	},
 	"dependencies": {
+		"@fortawesome/fontawesome-free": "^5.14.0",
 		"chart.js": "^2.9.3",
-		"electron": "^10.1.1",
 		"hotkeys-js": "^3.8.1",
 		"java": "^0.12.1",
 		"jquery": "^3.5.1",

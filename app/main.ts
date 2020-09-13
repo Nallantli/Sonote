@@ -3,7 +3,6 @@
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import java from 'java';
 import fs from 'fs';
-import { MessageBoxSyncOptions } from 'electron/main';
 
 process.on('uncaughtException', (err) => {
 	console.log(err);
@@ -20,7 +19,7 @@ function createWindow() {
 	java.options.push("-Dfile.encoding=UTF-8");
 	java.options.push('-Xrs');
 	java.options.push('-Djava.awt.headless=true');
-	java.classpath.push("./build");
+	java.classpath.push("./fetch");
 
 	if (!fs.existsSync("bin")) {
 		dialog.showMessageBoxSync({
@@ -34,6 +33,10 @@ function createWindow() {
 			height: 400,
 			frame: false,
 			resizable: false,
+			transparent: true,
+			skipTaskbar: true,
+			alwaysOnTop: true,
+			closable: false,
 			webPreferences: {
 				nodeIntegration: true,
 				enableRemoteModule: true
@@ -45,7 +48,7 @@ function createWindow() {
 		mainWindow.loadFile('download.html');
 
 		listener = java.newProxy('DownloadProxy', {
-			sendData: function (value : string) {
+			sendData: function (value: string) {
 				mainWindow.webContents.send("listen", value);
 			}
 		});
@@ -58,6 +61,7 @@ function createWindow() {
 	} else {
 		java.classpath.push("./bin/SonoClient.jar");
 		java.classpath.push("./bin/external/json-simple-1.1.jar");
+		java.classpath.push("./bin-java");
 
 		listener = java.newProxy('Listener', {
 			sendData: function (header: string, body: string, id: number, datum: any) {
@@ -90,8 +94,8 @@ function createWindow() {
 		}, buffer_timer);
 
 		mainWindow = new BrowserWindow({
-			width: 800,
-			height: 600,
+			width: 1000,
+			height: 700,
 			frame: false,
 			webPreferences: {
 				nodeIntegration: true,

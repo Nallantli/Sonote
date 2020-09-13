@@ -1,4 +1,8 @@
 node_modules
 .vscode
-build
+bin-sonote
+bin-java
 bin
+main
+build
+fetch

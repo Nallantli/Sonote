@@ -103,6 +103,8 @@ function resetData(): void {
 		head: "new"
 	});
 
+	addLibrary('sonote.so');
+
 	document.getElementById("tabs")!.innerHTML = "";
 	document.getElementById("wall-cont")!.innerHTML = "";
 	document.getElementById("library-list")!.innerHTML = `<div class="library-name"><i class="far fa-file-code"></i> std.so</div>`;
@@ -302,8 +304,12 @@ function openWall(wallID: number): void {
 	});
 }
 
+function getCurrentWallID(): number {
+	return Number(document.getElementsByClassName('selectedtab')[0].id.split('-')[1]);
+}
+
 function closeCurrentWall(): void {
-	closeWall(Number(document.getElementsByClassName('selectedtab')[0].id.split('-')[1]));
+	closeWall(getCurrentWallID());
 }
 
 function closeWall(wallID: number): void {
@@ -335,11 +341,11 @@ function addCodeBox(id: number | undefined, wallID: number, top: boolean, code?:
 		</div>
 		<div class="codebox-output" id="cbo-${boxN}"><div class="vector-cont"></div></div>
 		<div class="codebox-input-cont" id="cbic-${boxN}">
-		<div contenteditable="true" class="codebox-input" id="cbi-${boxN}" onfocus="setInputWatch('#cbi-${boxN}')" onblur="removeInputWatch('#cbi-${boxN}')" oninput="refresh(${boxN}, ${wallID}, 300)"></div>
+		<div contenteditable="true" class="codebox-input" id="cbi-${boxN}" onfocus="setInputWatch(${boxN})" onblur="removeInputWatch('#cbi-${boxN}')" oninput="refresh(${boxN}, ${wallID}, 300)"></div>
 		<div class="codebox-input-print" id="cbip-${boxN}"><div></div></div>
 		</div>
 		<div class="codebox-print" id="cbp-${boxN}"></div>
-		<div class="codebox-bar">
+		<div class="codebox-bar" id="cbbb-${boxN}">
 			<button class="cb-button runbutton" onclick="addCodeBox(${boxN}, ${wallID}, false)"><i class="fas fa-plus"></i></button>
 			<button class="cb-button runbutton" onclick="pinCodeBox(${boxN})"><i class="fas fa-thumbtack"></i></button>
 			<div class="running-thread" id="rt-${boxN}" style="display:none"><i class="fas fa-circle-notch spinner"></i></div>
@@ -368,6 +374,7 @@ function addCodeBox(id: number | undefined, wallID: number, top: boolean, code?:
 function pinCodeBox(boxN: number): void {
 	document.getElementById(`cbo-${boxN}`)!.classList.toggle("pinned-box");
 	document.getElementById(`cbic-${boxN}`)!.classList.toggle("pinned-input");
+	document.getElementById(`cbbb-${boxN}`)!.classList.toggle("pinned-bar");
 	document.getElementById(`cbi-${boxN}`)!.contentEditable = document.getElementById(`cbi-${boxN}`)!.contentEditable == 'true' ? 'false' : 'true';
 }
 
@@ -431,6 +438,7 @@ function updateLibList(libname: string): void {
 	document.getElementById("library-list")!.innerHTML += `<div class="library-name"><i class="far fa-file-code"></i> ${libname}</div>`;
 	(<HTMLInputElement>document.getElementById(`library-new`)).value = "";
 	libraries.push(libname);
+	refreshOutputs(getCurrentWallID());
 }
 
 function getCodeInfo(boxN: number): { id: number, body: string } {
@@ -555,7 +563,7 @@ function removeInputWatch(element: string): void {
 }
 
 function setInputWatch(element: string): void {
-	$(element).on('keydown', function (e) {
+	$(`cbi-${element}`).on('keydown', function (e) {
 		let range = window.getSelection()!.getRangeAt(0);
 		let p_range = range.cloneRange();
 		p_range.selectNodeContents(this);
@@ -614,7 +622,7 @@ document.getElementById('library-new')!.addEventListener('keyup', (event) => {
 	}
 });
 
-addLibrary('res/sonote.so');
+addLibrary('sonote.so');
 
 Sortable.create(document.getElementById(`tabs`)!, {
 	animation: 150

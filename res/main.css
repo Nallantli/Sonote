@@ -475,7 +475,12 @@ td {
 }
 
 .pinned-input {
+	display: none;
+}
+
+.pinned-bar {
 	background-color: var(--pin-color);
+	opacity: 1 !important;
 }
 
 .vector-cont>div {
